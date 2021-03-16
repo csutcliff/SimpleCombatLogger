@@ -73,9 +73,9 @@ end
 function SimpleCombatLogger:OnEnable()
     self:Print("Enabled")
     self:RegisterEvent("PLAYER_ENTERING_WORLD","CheckLogging")
-	self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED","CheckLogging")
+    self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED","CheckLogging")
     self:RegisterEvent("UPDATE_INSTANCE_INFO","CheckLogging")
-	self:CheckLogging()
+    self:CheckLogging()
 end
 
 function SimpleCombatLogger:OnDisable()
@@ -83,7 +83,7 @@ function SimpleCombatLogger:OnDisable()
     self:UnregisterEvent("PLAYER_ENTERING_WORLD")
     self:UnregisterEvent("PLAYER_DIFFICULTY_CHANGED")
     self:UnregisterEvent("UPDATE_INSTANCE_INFO")
-	self:StopLogging()
+    self:StopLogging()
 end
 
 function SimpleCombatLogger:ChatCommand(input)
@@ -119,9 +119,9 @@ end
 
 function SimpleCombatLogger:StopLogging()
     if LoggingCombat() then
-		self:Print("Stopping Combat Logging")
+        self:Print("Stopping Combat Logging")
         LoggingCombat(false)
-	end
+    end
 end
 
 function SimpleCombatLogger:CheckLogging(event)
