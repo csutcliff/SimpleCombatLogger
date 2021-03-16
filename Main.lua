@@ -13,7 +13,7 @@ local options = {
             desc = "Enables / Disables the addon",
             type = "toggle",
             set = function(info, value) SimpleCombatLogger:SetEnable(value) end,
-            get = function(info) return SimpleCombatLogger.db.profile.enabled end
+            get = function(info) return SimpleCombatLogger.db.profile.enable end
           },
           instances = {
             name = "Instances",
@@ -72,7 +72,7 @@ function SimpleCombatLogger:OnInitialize()
 end
 
 function SimpleCombatLogger:OnEnable()
-    if (self.db.profile.enabled) then
+    if (self.db.profile.enable) then
         self:Print("Enabled")
         self:RegisterEvent("PLAYER_ENTERING_WORLD", "EventAggregate")
         self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", "EventAggregate")
@@ -111,10 +111,10 @@ function SimpleCombatLogger:ChatCommand(input)
 end
 
 function SimpleCombatLogger:SetEnable(value)
-    if (self.db.profile.enabled == value) then
+    if (self.db.profile.enable == value) then
         return
     end
-    self.db.profile.enabled = value
+    self.db.profile.enable = value
     if (value) then
         SimpleCombatLogger:OnEnable()
     else
