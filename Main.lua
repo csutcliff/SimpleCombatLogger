@@ -1,6 +1,7 @@
-local SimpleCombatLogger = LibStub("AceAddon-3.0"):NewAddon("SimpleCombatLogger", "AceConsole-3.0", "AceEvent-3.0")
+local SimpleCombatLogger = LibStub("AceAddon-3.0"):NewAddon("SimpleCombatLogger", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 local LoggingCombat = _G.LoggingCombat
 local GetInstanceInfo = _G.GetInstanceInfo
+local bucketHandle = nil
 
 local options = {
     name = "SimpleCombatLogger",
@@ -71,11 +72,17 @@ function SimpleCombatLogger:OnInitialize()
 end
 
 function SimpleCombatLogger:OnEnable()
-    self:Print("Enabled")
-    self:RegisterEvent("PLAYER_ENTERING_WORLD","CheckLogging")
-    self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED","CheckLogging")
-    self:RegisterEvent("UPDATE_INSTANCE_INFO","CheckLogging")
-    self:CheckLogging()
+    if (self.db.profile.enabled) then
+        self:Print("Enabled")
+        self:RegisterEvent("PLAYER_ENTERING_WORLD", "EventAggregate")
+        self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", "EventAggregate")
+        self:RegisterEvent("UPDATE_INSTANCE_INFO", "EventAggregate")
+        if (bucketHandle == nil) then
+            -- self:Print("Registering bucket")
+            bucketHandle = self:RegisterBucketMessage("SIMPLECOMBATLOGGER_AGG_EVENT", 1.0, "CheckLogging")
+        end
+        self:EventAggregate(nil)
+    end
 end
 
 function SimpleCombatLogger:OnDisable()
@@ -83,6 +90,11 @@ function SimpleCombatLogger:OnDisable()
     self:UnregisterEvent("PLAYER_ENTERING_WORLD")
     self:UnregisterEvent("PLAYER_DIFFICULTY_CHANGED")
     self:UnregisterEvent("UPDATE_INSTANCE_INFO")
+    if (bucketHandle) then
+        -- self:Print("Unregistering bucket")
+        self:UnregisterBucket(bucketHandle)
+        bucketHandle = nil
+    end
     self:StopLogging()
 end
 
@@ -124,7 +136,13 @@ function SimpleCombatLogger:StopLogging()
     end
 end
 
+function SimpleCombatLogger:EventAggregate(event)
+    -- self:Print("Event fired")
+    self:SendMessage("SIMPLECOMBATLOGGER_AGG_EVENT")
+end
+
 function SimpleCombatLogger:CheckLogging(event)
+    -- self:Print("Aggregate handler fired")
     local inInstance, instanceType = IsInInstance()
 
     if (not inInstance or instanceType == nil or instanceType == "none") then
