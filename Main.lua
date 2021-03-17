@@ -25,35 +25,50 @@ local options = {
                     name = "Normal",
                     desc = "Enables / Disables normal dungeon logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.party.normal = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.party.normal = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.normal end
                 },
                 heroic = {
                     name = "Heroic",
                     desc = "Enables / Disables heroic dungeon logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.party.heroic = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.party.heroic = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.heroic end
                 },
                 mythicplus = {
                     name = "Mythic Plus",
                     desc = "Enables / Disables mythic plus logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.party.mythicplus = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.party.mythicplus = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.mythicplus end
                 },
                 mythic = {
                     name = "Mythic",
                     desc = "Enables / Disables mythic dungeon logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.party.mythic = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.party.mythic = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.mythic end
                 },
                 timewalking = {
                     name = "Timewalking",
                     desc = "Enables / Disables timewalking dungeon logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.party.timewalking = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.party.timewalking = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.timewalking end
                 },
             }
@@ -66,35 +81,50 @@ local options = {
                     name = "LFR",
                     desc = "Enables / Disables LFR raid logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.raid.lfr = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.raid.lfr = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.lfr end
                 },
                 normal = {
                     name = "Normal",
                     desc = "Enables / Disables normal raid logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.raid.normal = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.raid.normal = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.normal end
                 },
                 heroic = {
                     name = "Heroic",
                     desc = "Enables / Disables heroic raid logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.raid.heroic = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.raid.heroic = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.heroic end
                 },
                 mythic = {
                     name = "Mythic",
                     desc = "Enables / Disables mythic raid logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.raid.mythic = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.raid.mythic = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.mythic end
                 },
                 timewalking = {
                     name = "Timewalking",
                     desc = "Enables / Disables timewalking raid logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.raid.timewalking = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.raid.timewalking = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.timewalking end
                 },
             }
@@ -107,21 +137,30 @@ local options = {
                     name = "Battlegrounds",
                     desc = "Enables / Disables battleground logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.pvp.regularbg = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.pvp.regularbg = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.regularbg end
                 },
                 ratedbg = {
                     name = "Rated Battlegrounds",
                     desc = "Enables / Disables rated battleground logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.pvp.ratedbg = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.pvp.ratedbg = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.ratedbg end
                 },
                 arena = {
                     name = "Arena",
                     desc = "Enables / Disables arena logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.pvp.arena = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.pvp.arena = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.arena end
                 },
                 --[[ Need to find a way to determine if arena's are rated or not 'C_PvP.IsRatedArena' returns true even in skirmish
@@ -149,7 +188,10 @@ local options = {
                     name = "Torghast",
                     desc = "Enables / Disables Torghast logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.scenario.torghast = val end,
+                    set = function(info,val)
+                        SimpleCombatLogger.db.profile.scenario.torghast = val
+                        SimpleCombatLogger:EventAggregate(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.scenario.torghast end
                 }
             }
@@ -190,6 +232,7 @@ end
 
 function SimpleCombatLogger:OnProfileChanged(db,name)
     db = self.db.profile
+    self:EventAggregate(nil)
 end
 
 function SimpleCombatLogger:OnEnable()
@@ -207,7 +250,7 @@ function SimpleCombatLogger:OnEnable()
         bucketHandle = self:RegisterBucketMessage("SIMPLECOMBATLOGGER_AGG_EVENT", 1.0, "CheckLogging")
     end
     self:EventAggregate(nil)
-    end
+end
 
 function SimpleCombatLogger:OnDisable()
     self:Print("Disabled")
