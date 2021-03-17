@@ -2,7 +2,7 @@ local SimpleCombatLogger = LibStub("AceAddon-3.0"):NewAddon("SimpleCombatLogger"
 local LoggingCombat = _G.LoggingCombat
 local GetInstanceInfo = _G.GetInstanceInfo
 local IsRatedBattleground = C_PvP.IsRatedBattleground
-local IsRatedArena = C_PvP.IsRatedArena
+-- local IsRatedArena = C_PvP.IsRatedArena
 local bucketHandle = nil
 
 local options = {
@@ -100,43 +100,45 @@ local options = {
             }
         },
         pvp = {
-            name = "Battleground",
+            name = "PvP",
             type = "group",
             args = {
-                regular = {
-                    name = "Non-Rated",
+                regularbg = {
+                    name = "Battlegrounds",
                     desc = "Enables / Disables battleground logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.pvp.regular = val end,
-                    get = function(info) return SimpleCombatLogger.db.profile.pvp.regular end
+                    set = function(info,val) SimpleCombatLogger.db.profile.pvp.regularbg = val end,
+                    get = function(info) return SimpleCombatLogger.db.profile.pvp.regularbg end
                 },
-                rated = {
-                    name = "Rated",
+                ratedbg = {
+                    name = "Rated Battlegrounds",
                     desc = "Enables / Disables rated battleground logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.pvp.rated = val end,
-                    get = function(info) return SimpleCombatLogger.db.profile.pvp.rated end
+                    set = function(info,val) SimpleCombatLogger.db.profile.pvp.ratedbg = val end,
+                    get = function(info) return SimpleCombatLogger.db.profile.pvp.ratedbg end
                 },
-            }
-        },
-        arena = {
-            name = "Arena",
-            type = "group",
-            args = {
+                arena = {
+                    name = "Arena",
+                    desc = "Enables / Disables arena logging",
+                    type = "toggle",
+                    set = function(info,val) SimpleCombatLogger.db.profile.pvp.arena = val end,
+                    get = function(info) return SimpleCombatLogger.db.profile.pvp.arena end
+                },
+                --[[ Need to find a way to determine if arena's are rated or not 'C_PvP.IsRatedArena' returns true even in skirmish
                 skirmish = {
-                    name = "Skirmish",
+                    name = "Arena Skirmish",
                     desc = "Enables / Disables arena skirmish logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.arena.skirmish = val end,
-                    get = function(info) return SimpleCombatLogger.db.profile.arena.skirmish end
+                    set = function(info,val) SimpleCombatLogger.db.profile.arena.arenakirmish = val end,
+                    get = function(info) return SimpleCombatLogger.db.profile.arena.arenaskirmish end
                 },
                 rated = {
-                    name = "Rated",
+                    name = "Rated Arena",
                     desc = "Enables / Disables rated arena logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.arena.rated = val end,
-                    get = function(info) return SimpleCombatLogger.db.profile.arena.rated end
-                },
+                    set = function(info,val) SimpleCombatLogger.db.profile.pvp.ratedarena = val end,
+                    get = function(info) return SimpleCombatLogger.db.profile.arena.ratedarena end
+                }, ]]
             }
         },
     }
@@ -152,9 +154,6 @@ local defaults = {
             ["*"] = true,
         },
         pvp = {
-            ["*"] = true,
-        },
-        arena = {
             ["*"] = true,
         },
     }
@@ -220,10 +219,10 @@ function SimpleCombatLogger:ChatCommand(input)
 end
 
 function SimpleCombatLogger:SetEnable(value)
-    if (self.db.profile.enable == value) then
+    if (db.enable == value) then
         return
     end
-    self.db.profile.enable = value
+    db.enable = value
     if (value) then
         SimpleCombatLogger:OnEnable()
     else
@@ -251,63 +250,66 @@ function SimpleCombatLogger:EventAggregate(event)
 end
 
 function SimpleCombatLogger:CheckLogging(event)
-    self:Print("Aggregate handler fired")
+    -- self:Print("Aggregate handler fired")
+    -- self:Print(GetInstanceInfo())
     local _, instanceType, difficultyID = GetInstanceInfo();
-    self:Print(instanceType..":"..difficultyID)
     if (instanceType == nil or instanceType == "none") then
         self:StopLogging()
         return
     elseif (instanceType == "pvp") then
-        if (IsRatedBattleground()) then
-            if (self.db.profile.pvp.rated) then
+        if (IsRatedBattleground()) then -- Returns false in regular BG, need to test in rated
+            if (db.pvp.ratedbg) then
                 self:StartLogging()
             else
                 self:StopLogging()
             end
-        elseif (self.db.profile.pvp.regular) then
+        elseif (db.pvp.regularbg) then
             self:StartLogging()
         else
             self:StopLogging()
         end
     elseif (instanceType == "arena") then
-        if (IsRatedArena()) then
-            if (self.db.profile.arena.rated) then
+        --[[ C_PvP.IsRatedArena returns true even in skirmish
+            if (IsRatedArena()) then
+            if (db.arena.rated) then
                 self:StartLogging()
             else
                 self:StopLogging()
             end
-        elseif (self.db.profile.arena.skirmish) then
+        elseif (db.arena.skirmish) then
+            ]]
+        if (db.pvp.arena) then
             self:StartLogging()
         else
             self:StopLogging()
         end
     elseif (instanceType == "party") then
         if (difficultyID == 1) then -- Normal
-            if (self.db.profile.party.normal) then
+            if (db.party.normal) then
                 self:StartLogging()
             else
                 self:StopLogging()
             end
         elseif (difficultyID == 2) then -- Heroic
-            if (self.db.profile.party.heroic) then
+            if (db.party.heroic) then
                 self:StartLogging()
             else
                 self:StopLogging()
             end
         elseif (difficultyID == 8) then -- Mythic Plus
-            if (self.db.profile.party.mythicplus) then
+            if (db.party.mythicplus) then
                 self:StartLogging()
             else
                 self:StopLogging()
             end
         elseif (difficultyID == 23) then -- Mythic
-            if (self.db.profile.party.mythic) then
+            if (db.party.mythic) then
                 self:StartLogging()
             else
                 self:StopLogging()
             end
         elseif (difficultyID == 24) then -- Timewalking
-            if (self.db.profile.party.timewalking) then
+            if (db.party.timewalking) then
                 self:StartLogging()
             else
                 self:StopLogging()
@@ -317,31 +319,31 @@ function SimpleCombatLogger:CheckLogging(event)
         end
     elseif (instanceType == "raid") then
         if (difficultyID == 7 or difficultyID == 17) then -- LFR
-            if (self.db.profile.raid.lfr) then
+            if (db.raid.lfr) then
                 self:StartLogging()
             else
                 self:StopLogging()
             end
         elseif (difficultyID == 3 or difficultyID == 4 or difficultyID == 9 or difficultyID == 14) then -- Normal
-            if (self.db.profile.raid.normal) then
+            if (db.raid.normal) then
                 self:StartLogging()
             else
                 self:StopLogging()
             end
         elseif (difficultyID == 5 or difficultyID == 6 or difficultyID == 15) then -- Heroic
-            if (self.db.profile.raid.heroic) then
+            if (db.raid.heroic) then
                 self:StartLogging()
             else
                 self:StopLogging()
             end
         elseif (difficultyID == 16) then -- Mythic
-            if (self.db.profile.raid.mythic) then
+            if (db.raid.mythic) then
                 self:StartLogging()
             else
                 self:StopLogging()
             end
         elseif (difficultyID == 33 or difficultyID == 151) then -- Timewalking
-            if (self.db.profile.raid.timewalking) then
+            if (db.raid.timewalking) then
                 self:StartLogging()
             else
                 self:StopLogging()
