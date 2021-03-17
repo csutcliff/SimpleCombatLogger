@@ -141,6 +141,19 @@ local options = {
                 }, ]]
             }
         },
+        scenario = {
+            name = "Scenarios",
+            type = "group",
+            args = {
+                torghast = {
+                    name = "Torghast",
+                    desc = "Enables / Disables Torghast logging",
+                    type = "toggle",
+                    set = function(info,val) SimpleCombatLogger.db.profile.scenario.torghast = val end,
+                    get = function(info) return SimpleCombatLogger.db.profile.scenario.torghast end
+                }
+            }
+        }
     }
 }
 
@@ -154,6 +167,9 @@ local defaults = {
             ["*"] = true,
         },
         pvp = {
+            ["*"] = true,
+        },
+        scenario = {
             ["*"] = true,
         },
     }
@@ -350,6 +366,14 @@ function SimpleCombatLogger:CheckLogging(event)
             end
         else
         self:StopLogging()
+        end
+    elseif (instanceType == "scenario") then
+        if (difficultyID == 167) then --Torghast
+            if (db.scenario.torghast) then
+                self:StartLogging()
+            else
+                self:StopLogging()
+            end
         end
     end
 end
