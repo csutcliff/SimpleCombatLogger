@@ -411,7 +411,7 @@ function SimpleCombatLogger:CheckLogging(event)
         self:StopLogging()
         end
     elseif (instanceType == "scenario") then
-        if (difficultyID == 167) then --Torghast
+        if (difficultyID == 167) then -- Torghast
             if (db.scenario.torghast) then
                 self:StartLogging()
             else
