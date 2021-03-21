@@ -1,4 +1,4 @@
-local SimpleCombatLogger = LibStub("AceAddon-3.0"):NewAddon("SimpleCombatLogger", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
+local SimpleCombatLogger = LibStub("AceAddon-3.0"):NewAddon("SimpleCombatLogger", "AceConsole-3.0", "AceEvent-3.0")
 local LoggingCombat = _G.LoggingCombat
 local GetInstanceInfo = _G.GetInstanceInfo
 local IsRatedBattleground = C_PvP.IsRatedBattleground
@@ -27,7 +27,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.party.normal = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.normal end
                 },
@@ -37,7 +37,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.party.heroic = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.heroic end
                 },
@@ -47,7 +47,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.party.mythicplus = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.mythicplus end
                 },
@@ -57,7 +57,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.party.mythic = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.mythic end
                 },
@@ -67,7 +67,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.party.timewalking = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.timewalking end
                 },
@@ -83,7 +83,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.raid.lfr = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.lfr end
                 },
@@ -93,7 +93,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.raid.normal = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.normal end
                 },
@@ -103,7 +103,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.raid.heroic = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.heroic end
                 },
@@ -113,7 +113,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.raid.mythic = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.mythic end
                 },
@@ -123,7 +123,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.raid.timewalking = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.timewalking end
                 },
@@ -139,7 +139,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.pvp.regularbg = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.regularbg end
                 },
@@ -149,7 +149,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.pvp.ratedbg = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.ratedbg end
                 },
@@ -159,7 +159,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.pvp.arena = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.arena end
                 },
@@ -190,7 +190,7 @@ local options = {
                     type = "toggle",
                     set = function(info,val)
                         SimpleCombatLogger.db.profile.scenario.torghast = val
-                        SimpleCombatLogger:EventAggregate(nil)
+                        SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.scenario.torghast end
                 }
@@ -232,7 +232,7 @@ end
 
 function SimpleCombatLogger:OnProfileChanged(db,name)
     db = self.db.profile
-    self:EventAggregate(nil)
+    self:CheckLogging(nil)
 end
 
 function SimpleCombatLogger:OnEnable()
@@ -242,14 +242,10 @@ function SimpleCombatLogger:OnEnable()
     end
 
     self:Print("Enabled")
-    self:RegisterEvent("PLAYER_ENTERING_WORLD", "EventAggregate")
-    self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", "EventAggregate")
-    self:RegisterEvent("UPDATE_INSTANCE_INFO", "EventAggregate")
-    if (bucketHandle == nil) then
-        -- self:Print("Registering bucket")
-        bucketHandle = self:RegisterBucketMessage("SIMPLECOMBATLOGGER_AGG_EVENT", 1.0, "CheckLogging")
-    end
-    self:EventAggregate(nil)
+    self:RegisterEvent("PLAYER_ENTERING_WORLD", "CheckLogging")
+    self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", "CheckLogging")
+    self:RegisterEvent("UPDATE_INSTANCE_INFO", "CheckLogging")
+    self:CheckLogging(nil)
 end
 
 function SimpleCombatLogger:OnDisable()
@@ -301,11 +297,6 @@ function SimpleCombatLogger:StopLogging()
         self:Print("Stopping Combat Logging")
         LoggingCombat(false)
     end
-end
-
-function SimpleCombatLogger:EventAggregate(event)
-    -- self:Print("Event fired")
-    self:SendMessage("SIMPLECOMBATLOGGER_AGG_EVENT")
 end
 
 function SimpleCombatLogger:CheckLogging(event)
