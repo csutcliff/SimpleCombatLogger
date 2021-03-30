@@ -17,6 +17,13 @@ local options = {
             set = function(info, value) SimpleCombatLogger:SetEnable(value) end,
             get = function(info) return SimpleCombatLogger.db.profile.enable end
         },
+        disableaclprompt = {
+            name = "Disable ACL Reminder",
+            desc = "Disables the Advanced Combat Logging prompt",
+            type = "toggle",
+            set = function(info, value) SimpleCombatLogger.db.profile.disableaclprompt = value end,
+            get = function(info) return SimpleCombatLogger.db.profile.disableaclprompt end
+        },
         party = {
             name = "Party",
             type = "group",
@@ -25,8 +32,8 @@ local options = {
                     name = "Normal",
                     desc = "Enables / Disables normal dungeon logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.party.normal = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.party.normal = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.normal end
@@ -35,8 +42,8 @@ local options = {
                     name = "Heroic",
                     desc = "Enables / Disables heroic dungeon logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.party.heroic = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.party.heroic = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.heroic end
@@ -45,8 +52,8 @@ local options = {
                     name = "Mythic Plus",
                     desc = "Enables / Disables mythic plus logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.party.mythicplus = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.party.mythicplus = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.mythicplus end
@@ -55,8 +62,8 @@ local options = {
                     name = "Mythic",
                     desc = "Enables / Disables mythic dungeon logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.party.mythic = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.party.mythic = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.mythic end
@@ -65,8 +72,8 @@ local options = {
                     name = "Timewalking",
                     desc = "Enables / Disables timewalking dungeon logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.party.timewalking = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.party.timewalking = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.party.timewalking end
@@ -81,8 +88,8 @@ local options = {
                     name = "LFR",
                     desc = "Enables / Disables LFR raid logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.raid.lfr = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.raid.lfr = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.lfr end
@@ -91,8 +98,8 @@ local options = {
                     name = "Normal",
                     desc = "Enables / Disables normal raid logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.raid.normal = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.raid.normal = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.normal end
@@ -101,8 +108,8 @@ local options = {
                     name = "Heroic",
                     desc = "Enables / Disables heroic raid logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.raid.heroic = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.raid.heroic = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.heroic end
@@ -111,8 +118,8 @@ local options = {
                     name = "Mythic",
                     desc = "Enables / Disables mythic raid logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.raid.mythic = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.raid.mythic = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.mythic end
@@ -121,8 +128,8 @@ local options = {
                     name = "Timewalking",
                     desc = "Enables / Disables timewalking raid logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.raid.timewalking = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.raid.timewalking = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.raid.timewalking end
@@ -137,8 +144,8 @@ local options = {
                     name = "Battlegrounds",
                     desc = "Enables / Disables battleground logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.pvp.regularbg = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.pvp.regularbg = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.regularbg end
@@ -147,8 +154,8 @@ local options = {
                     name = "Rated Battlegrounds",
                     desc = "Enables / Disables rated battleground logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.pvp.ratedbg = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.pvp.ratedbg = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.ratedbg end
@@ -157,8 +164,8 @@ local options = {
                     name = "Arena",
                     desc = "Enables / Disables arena logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.pvp.arena = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.pvp.arena = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.arena end
@@ -168,14 +175,14 @@ local options = {
                     name = "Arena Skirmish",
                     desc = "Enables / Disables arena skirmish logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.arena.arenakirmish = val end,
+                    set = function(info, value) SimpleCombatLogger.db.profile.arena.arenakirmish = value end,
                     get = function(info) return SimpleCombatLogger.db.profile.arena.arenaskirmish end
                 },
                 rated = {
                     name = "Rated Arena",
                     desc = "Enables / Disables rated arena logging",
                     type = "toggle",
-                    set = function(info,val) SimpleCombatLogger.db.profile.pvp.ratedarena = val end,
+                    set = function(info, value) SimpleCombatLogger.db.profile.pvp.ratedarena = value end,
                     get = function(info) return SimpleCombatLogger.db.profile.arena.ratedarena end
                 }, ]]
             }
@@ -188,8 +195,8 @@ local options = {
                     name = "Torghast",
                     desc = "Enables / Disables Torghast logging",
                     type = "toggle",
-                    set = function(info,val)
-                        SimpleCombatLogger.db.profile.scenario.torghast = val
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.scenario.torghast = value
                         SimpleCombatLogger:CheckLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.scenario.torghast end
@@ -202,6 +209,7 @@ local options = {
 local defaults = {
     profile = {
         enable = true,
+        disableaclprompt = false,
         party = {
             ["*"] = true,
         },
@@ -219,6 +227,22 @@ local defaults = {
 
 function SimpleCombatLogger:OnInitialize()
     -- Called when the addon is initialized
+
+    -- ACL Prompt
+    StaticPopupDialogs["SCL_ENABLE_ACL"] = {
+        text = "Advaned Combat Logging is required for most combat log parsers, would you like to enable it?",
+        button1 = "Yes",
+        button2 = "No",
+        OnAccept = function()
+            SimpleCombatLogger:EnableACL()
+        end,
+        timeout = 0,
+        whileDead = true,
+        hideOnEscape = true,
+        preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+      }
+
+    -- Initialisation
     self.db = LibStub("AceDB-3.0"):New("SimpleCombatLoggerDB", defaults, true)
     self.db.RegisterCallback(self, "OnProfileChanged", "OnProfileChanged")
     db = self.db.profile
@@ -235,6 +259,10 @@ function SimpleCombatLogger:OnProfileChanged(db,name)
     self:CheckLogging(nil)
 end
 
+function SimpleCombatLogger:EnableACL()
+    SetCVar("advancedCombatLogging", 1)
+end
+
 function SimpleCombatLogger:OnEnable()
     if (not db.enable) then
         self:OnDisable()
@@ -242,6 +270,9 @@ function SimpleCombatLogger:OnEnable()
     end
 
     self:Print("Enabled")
+    if (not db.disableaclprompt and GetCVar("advancedCombatLogging") == "0") then
+        StaticPopup_Show ("SCL_ENABLE_ACL")
+    end
     self:RegisterEvent("PLAYER_ENTERING_WORLD", "CheckLogging")
     self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", "CheckLogging")
     self:RegisterEvent("UPDATE_INSTANCE_INFO", "CheckLogging")
