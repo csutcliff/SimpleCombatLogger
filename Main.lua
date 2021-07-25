@@ -2,7 +2,9 @@ local SimpleCombatLogger = LibStub("AceAddon-3.0"):NewAddon("SimpleCombatLogger"
 local LoggingCombat = _G.LoggingCombat
 local GetInstanceInfo = _G.GetInstanceInfo
 local IsRatedBattleground = C_PvP.IsRatedBattleground
--- local IsRatedArena = C_PvP.IsRatedArena
+local IsRatedArena = C_PvP.IsRatedArena
+local IsArenaSkirmish = C_PvP.IsArenaSkirmish
+local IsLoggingArena = false
 
 local options = {
     name = "SimpleCombatLogger",
@@ -22,6 +24,13 @@ local options = {
             type = "toggle",
             set = function(info, value) SimpleCombatLogger.db.profile.disableaclprompt = value end,
             get = function(info) return SimpleCombatLogger.db.profile.disableaclprompt end
+        },
+        enabledebug = {
+            name = "Debug",
+            desc = "Enable Debug output",
+            type = "toggle",
+            set = function(info, value) SimpleCombatLogger.db.profile.enabledebug = value end,
+            get = function(info) return SimpleCombatLogger.db.profile.enabledebug end
         },
         party = {
             name = "Party",
@@ -159,31 +168,20 @@ local options = {
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.ratedbg end
                 },
-                arena = {
-                    name = "Arena",
-                    desc = "Enables / Disables arena logging",
-                    type = "toggle",
-                    set = function(info, value)
-                        SimpleCombatLogger.db.profile.pvp.arena = value
-                        SimpleCombatLogger:CheckToggleLogging(nil)
-                    end,
-                    get = function(info) return SimpleCombatLogger.db.profile.pvp.arena end
-                },
-                --[[ Need to find a way to determine if arena's are rated or not 'C_PvP.IsRatedArena' returns true even in skirmish
-                skirmish = {
+                arenakirmish = {
                     name = "Arena Skirmish",
                     desc = "Enables / Disables arena skirmish logging",
                     type = "toggle",
-                    set = function(info, value) SimpleCombatLogger.db.profile.arena.arenakirmish = value end,
-                    get = function(info) return SimpleCombatLogger.db.profile.arena.arenaskirmish end
+                    set = function(info, value) SimpleCombatLogger.db.profile.pvp.arenakirmish = value end,
+                    get = function(info) return SimpleCombatLogger.db.profile.pvp.arenaskirmish end
                 },
-                rated = {
+                ratedarena = {
                     name = "Rated Arena",
                     desc = "Enables / Disables rated arena logging",
                     type = "toggle",
                     set = function(info, value) SimpleCombatLogger.db.profile.pvp.ratedarena = value end,
-                    get = function(info) return SimpleCombatLogger.db.profile.arena.ratedarena end
-                }, ]]
+                    get = function(info) return SimpleCombatLogger.db.profile.pvp.ratedarena end
+                },
             }
         },
         scenario = {
@@ -275,6 +273,7 @@ function SimpleCombatLogger:OnEnable()
     self:RegisterEvent("UPDATE_INSTANCE_INFO", "CheckEnableLogging")
     self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", "CheckEnableLogging")
     self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "CheckDisableLogging")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD", "CheckArenaLogging")
     self:CheckToggleLogging(nil)
 end
 
@@ -332,9 +331,11 @@ function SimpleCombatLogger:CheckToggleLogging(event)
 end
 
 function SimpleCombatLogger:CheckEnableLogging(event)
-    -- self:Print("Check Enable")
-    -- self:Print(event)
-    -- self:Print(GetInstanceInfo())
+    if (db.profile.enabledebug) then
+        self:Print("Check Enable")
+        self:Print(event)
+        self:Print(GetInstanceInfo())
+    end
     local _, instanceType, difficultyID = GetInstanceInfo();
     if (instanceType == "pvp") then
         if (IsRatedBattleground()) then -- Returns false in regular BG, need to test in rated
@@ -342,19 +343,6 @@ function SimpleCombatLogger:CheckEnableLogging(event)
                 self:StartLogging()
             end
         elseif (db.pvp.regularbg) then
-            self:StartLogging()
-        end
-    elseif (instanceType == "arena") then
-        --[[ C_PvP.IsRatedArena returns true even in skirmish
-            if (IsRatedArena()) then
-            if (db.arena.rated) then
-                self:StartLogging()
-            else
-                self:StopLogging()
-            end
-        elseif (db.arena.skirmish) then
-            ]]
-        if (db.pvp.arena) then
             self:StartLogging()
         end
     elseif (instanceType == "party") then
@@ -410,10 +398,41 @@ function SimpleCombatLogger:CheckEnableLogging(event)
     end
 end
 
+function SimpleCombatLogger:CheckArenaLogging(event)
+    if (db.profile.enabledebug) then
+        self:Print("Check Arena")
+        self:Print(event)
+        self:Print(GetInstanceInfo())
+    end
+    local _, instanceType = GetInstanceInfo();
+    if (instanceType == "arena") then
+        if (IsRatedArena() and not IsArenaSkirmish()) then
+            if (db.pvp.ratedarena) then
+                IsLoggingArena = true
+                self:StartLogging()
+            else
+                IsLoggingArena = false
+                self:StopLogging()
+            end
+        elseif (IsArenaSkirmish() and db.pvp.arenakirmish) then
+            IsLoggingArena = true
+            self:StartLogging()
+        else
+            IsLoggingArena = false
+            self:StopLogging()
+        end
+    elseif (IsLoggingArena) then
+        IsLoggingArena = false
+        self:StopLogging()
+    end
+end
+
 function SimpleCombatLogger:CheckDisableLogging(event)
-    -- self:Print("Check Disable")
-    -- self:Print(event)
-    -- self:Print(GetInstanceInfo())
+    if (db.profile.enabledebug) then
+        self:Print("Check Disable")
+        self:Print(event)
+        self:Print(GetInstanceInfo())
+    end
     local _, instanceType, difficultyID = GetInstanceInfo();
     if (instanceType == nil or instanceType == "none") then
         self:StopLogging()
@@ -424,19 +443,6 @@ function SimpleCombatLogger:CheckDisableLogging(event)
                 self:StopLogging()
             end
         elseif (not db.pvp.regularbg) then
-            self:StopLogging()
-        end
-    elseif (instanceType == "arena") then
-        --[[ C_PvP.IsRatedArena returns true even in skirmish
-            if (IsRatedArena()) then
-            if (db.arena.rated) then
-                self:StartLogging()
-            else
-                self:StopLogging()
-            end
-        elseif (db.arena.skirmish) then
-            ]]
-        if (not db.pvp.arena) then
             self:StopLogging()
         end
     elseif (instanceType == "party") then
