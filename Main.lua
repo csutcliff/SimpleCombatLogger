@@ -172,14 +172,20 @@ local options = {
                     name = "Arena Skirmish",
                     desc = "Enables / Disables arena skirmish logging",
                     type = "toggle",
-                    set = function(info, value) SimpleCombatLogger.db.profile.pvp.arenakirmish = value end,
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.pvp.arenakirmish = value
+                        SimpleCombatLogger:CheckArenaLogging(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.arenaskirmish end
                 },
                 ratedarena = {
                     name = "Rated Arena",
                     desc = "Enables / Disables rated arena logging",
                     type = "toggle",
-                    set = function(info, value) SimpleCombatLogger.db.profile.pvp.ratedarena = value end,
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.pvp.ratedarena = value
+                        SimpleCombatLogger:CheckArenaLogging(nil)
+                    end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.ratedarena end
                 },
             }
@@ -207,6 +213,7 @@ local defaults = {
     profile = {
         enable = true,
         disableaclprompt = false,
+        enabledebug = false,
         party = {
             ["*"] = true,
         },
@@ -253,7 +260,7 @@ end
 
 function SimpleCombatLogger:OnProfileChanged(db,name)
     db = self.db.profile
-    self:CheckLogging(nil)
+    self:CheckToggleLogging(nil)
 end
 
 function SimpleCombatLogger:EnableACL()
@@ -331,7 +338,7 @@ function SimpleCombatLogger:CheckToggleLogging(event)
 end
 
 function SimpleCombatLogger:CheckEnableLogging(event)
-    if (db.profile.enabledebug) then
+    if (db.enabledebug) then
         self:Print("Check Enable")
         self:Print(event)
         self:Print(GetInstanceInfo())
@@ -399,7 +406,7 @@ function SimpleCombatLogger:CheckEnableLogging(event)
 end
 
 function SimpleCombatLogger:CheckArenaLogging(event)
-    if (db.profile.enabledebug) then
+    if (db.enabledebug) then
         self:Print("Check Arena")
         self:Print(event)
         self:Print(GetInstanceInfo())
@@ -428,7 +435,7 @@ function SimpleCombatLogger:CheckArenaLogging(event)
 end
 
 function SimpleCombatLogger:CheckDisableLogging(event)
-    if (db.profile.enabledebug) then
+    if (db.enabledebug) then
         self:Print("Check Disable")
         self:Print(event)
         self:Print(GetInstanceInfo())
