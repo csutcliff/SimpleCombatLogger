@@ -33,6 +33,13 @@ local options = {
             set = function(info, value) SimpleCombatLogger.db.profile.enabledebug = value end,
             get = function(info) return SimpleCombatLogger.db.profile.enabledebug end
         },
+        delaystop = {
+            name = "Delayed Log Stop",
+            desc = "Delay the stopping of combat logging by 30 seconds, this can help compatibility with some external programs such as SquadOV",
+            type = "toggle",
+            set = function(info, value) SimpleCombatLogger.db.profile.delaystop = value end,
+            get = function(info) return SimpleCombatLogger.db.profile.delaystop end
+        },
         party = {
             name = "Party",
             type = "group",
@@ -215,6 +222,7 @@ local defaults = {
         enable = true,
         disableaclprompt = false,
         enabledebug = false,
+        delaystop = true,
         party = {
             ["*"] = true,
         },
@@ -334,6 +342,17 @@ function SimpleCombatLogger:StartLogging()
 end
 
 function SimpleCombatLogger:StopLogging()
+    if (db.delaystop) then
+        if (db.enabledebug) then
+            self:Print("Delay enabled, stopping in 30 seconds")
+        end
+        self:ScheduleTimer("StopLoggingNow", 30)
+    else
+        self:StopLoggingNow()
+    end
+end
+
+function SimpleCombatLogger:StopLoggingNow()
     if LoggingCombat() then
         self:Print("Stopping Combat Logging")
         LoggingCombat(false)
