@@ -336,6 +336,7 @@ end
 
 function SimpleCombatLogger:StartLogging()
     if not LoggingCombat() then
+        self:CancelAllTimers()
         self:Print("Starting Combat Logging")
         LoggingCombat(true)
     end
