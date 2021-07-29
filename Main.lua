@@ -1,9 +1,10 @@
-local SimpleCombatLogger = LibStub("AceAddon-3.0"):NewAddon("SimpleCombatLogger", "AceConsole-3.0", "AceEvent-3.0")
+local SimpleCombatLogger = LibStub("AceAddon-3.0"):NewAddon("SimpleCombatLogger", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0")
+local _G = _G
 local LoggingCombat = _G.LoggingCombat
 local GetInstanceInfo = _G.GetInstanceInfo
 local IsRatedBattleground = C_PvP.IsRatedBattleground
 local IsRatedArena = C_PvP.IsRatedArena
-local IsArenaSkirmish = C_PvP.IsArenaSkirmish
+local IsArenaSkirmish = _G.IsArenaSkirmish
 local IsLoggingArena = false
 
 local options = {
@@ -168,12 +169,12 @@ local options = {
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.ratedbg end
                 },
-                arenakirmish = {
+                arenaskirmish = {
                     name = "Arena Skirmish",
                     desc = "Enables / Disables arena skirmish logging",
                     type = "toggle",
                     set = function(info, value)
-                        SimpleCombatLogger.db.profile.pvp.arenakirmish = value
+                        SimpleCombatLogger.db.profile.pvp.arenaskirmish = value
                         SimpleCombatLogger:CheckArenaLogging(nil)
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.arenaskirmish end
@@ -280,7 +281,7 @@ function SimpleCombatLogger:OnEnable()
     self:RegisterEvent("UPDATE_INSTANCE_INFO", "CheckEnableLogging")
     self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", "CheckEnableLogging")
     self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "CheckDisableLogging")
-    self:RegisterEvent("PLAYER_ENTERING_WORLD", "CheckArenaLogging")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD", "ArenaEventTimer")
     self:CheckToggleLogging(nil)
 end
 
@@ -301,6 +302,13 @@ function SimpleCombatLogger:ChatCommand(input)
         self:SetEnable(true)
     elseif (input:trim() == "disable") then
         self:SetEnable(false)
+    elseif (input:trim() == "test") then
+        self:Print("Logging Combat: " .. tostring(LoggingCombat()))
+        self:Print("Instance Info: " .. tostring(GetInstanceInfo()))
+        self:Print("Currently Logging Arena: " .. tostring(IsLoggingArena))
+        self:Print("Rated Arena: " .. tostring(IsRatedArena()))
+        self:Print("Arena Skirmish: " .. tostring(IsArenaSkirmish()))
+        self:Print("Rated BG: " .. tostring(IsRatedBattleground()))
     else
         LibStub("AceConfigCmd-3.0").HandleCommand(SimpleCombatLogger, "SimpleCombatLogger", "SimpleCombatLogger", input)
     end
@@ -332,6 +340,23 @@ function SimpleCombatLogger:StopLogging()
     end
 end
 
+function SimpleCombatLogger:ArenaEventTimer(event)
+    if (db.enabledebug) then
+        self:Print("Event: " .. tostring(event))
+        self:Print("Instance Info: " .. tostring(GetInstanceInfo()))
+    end
+    local _, instanceType = GetInstanceInfo();
+    if (instanceType == "arena") then
+        if (db.enabledebug) then
+            self:Print("Scheduling arena check for 5 seconds")
+        end
+        self:ScheduleTimer("CheckArenaLogging", 5)
+    elseif (IsLoggingArena) then
+        IsLoggingArena = false
+        self:StopLogging()
+    end
+end
+
 function SimpleCombatLogger:CheckToggleLogging(event)
     self:CheckDisableLogging(event)
     self:CheckEnableLogging(event)
@@ -340,8 +365,8 @@ end
 function SimpleCombatLogger:CheckEnableLogging(event)
     if (db.enabledebug) then
         self:Print("Check Enable")
-        self:Print(event)
-        self:Print(GetInstanceInfo())
+        self:Print("Event: " .. tostring(event))
+        self:Print("Instance Info: " .. tostring(GetInstanceInfo()))
     end
     local _, instanceType, difficultyID = GetInstanceInfo();
     if (instanceType == "pvp") then
@@ -405,30 +430,24 @@ function SimpleCombatLogger:CheckEnableLogging(event)
     end
 end
 
-function SimpleCombatLogger:CheckArenaLogging(event)
+function SimpleCombatLogger:CheckArenaLogging()
     if (db.enabledebug) then
         self:Print("Check Arena")
-        self:Print(event)
-        self:Print(GetInstanceInfo())
+        self:Print("Rated Arena: " .. tostring(IsRatedArena()))
+        self:Print("Arena Skirmish: " .. tostring(IsArenaSkirmish()))
     end
-    local _, instanceType = GetInstanceInfo();
-    if (instanceType == "arena") then
-        if (IsRatedArena() and not IsArenaSkirmish()) then
-            if (db.pvp.ratedarena) then
+    if (IsRatedArena() and not IsArenaSkirmish()) then
+        if (db.pvp.ratedarena) then
                 IsLoggingArena = true
                 self:StartLogging()
-            else
+        else
                 IsLoggingArena = false
                 self:StopLogging()
-            end
-        elseif (IsArenaSkirmish() and db.pvp.arenakirmish) then
-            IsLoggingArena = true
-            self:StartLogging()
-        else
-            IsLoggingArena = false
-            self:StopLogging()
         end
-    elseif (IsLoggingArena) then
+    elseif (IsArenaSkirmish() and db.pvp.arenaskirmish) then
+        IsLoggingArena = true
+        self:StartLogging()
+    else
         IsLoggingArena = false
         self:StopLogging()
     end
@@ -437,8 +456,8 @@ end
 function SimpleCombatLogger:CheckDisableLogging(event)
     if (db.enabledebug) then
         self:Print("Check Disable")
-        self:Print(event)
-        self:Print(GetInstanceInfo())
+        self:Print("Event: " .. tostring(event))
+        self:Print("Instance Info: " .. tostring(GetInstanceInfo()))
     end
     local _, instanceType, difficultyID = GetInstanceInfo();
     if (instanceType == nil or instanceType == "none") then
