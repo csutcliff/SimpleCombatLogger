@@ -413,9 +413,20 @@ function SimpleCombatLogger:CheckEnableLogging(event)
         self:Print("Check Enable")
         self:Print("Currently Logging: " .. tostring(IsLoggingCombat))
         self:Print("Event: " .. tostring(event))
-        self:Print("Instance Info: " .. tostring(GetInstanceInfo()))
+        -- self:Print("Instance Info:" .. tostring(GetInstanceInfo()))
+        local name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
+        self:Print("    name: " .. tostring(name))
+        self:Print("    instanceType: " .. tostring(instanceType))
+        self:Print("    difficultyID: " .. tostring(difficultyID))
+        self:Print("    difficultyName: " .. tostring(difficultyName))
+        self:Print("    maxPlayers: " .. tostring(maxPlayers))
+        self:Print("    dynamicDifficulty: " .. tostring(dynamicDifficulty))
+        self:Print("    isDynamic: " .. tostring(isDynamic))
+        self:Print("    instanceID: " .. tostring(instanceID))
+        self:Print("    instanceGroupSize: " .. tostring(instanceGroupSize))
+        self:Print("    LfgDungeonID: " .. tostring(LfgDungeonID))
     end
-    local _, instanceType, difficultyID = GetInstanceInfo();
+    local _, instanceType, difficultyID, _, maxPlayers = GetInstanceInfo();
     if (instanceType == "pvp") then
         if (C_PvP.IsRatedBattleground()) then -- Returns false in regular BG, need to test in rated
             if (self.db.profile.pvp.ratedbg) then
@@ -425,25 +436,31 @@ function SimpleCombatLogger:CheckEnableLogging(event)
             self:StartLogging()
         end
     elseif (instanceType == "party") then
-        if (difficultyID == 1) then -- Normal
-            if (self.db.profile.party.normal) then
-                self:StartLogging()
+        if (maxPlayers > 5) then
+            if (self.db.profile.enabledebug) then
+                self:Print("maxPlayers greater than 5 in party instance, assuming to be non-dungeon")
             end
-        elseif (difficultyID == 2) then -- Heroic
-            if (self.db.profile.party.heroic) then
-                self:StartLogging()
-            end
-        elseif (difficultyID == 8) then -- Mythic Plus
-            if (self.db.profile.party.mythicplus) then
-                self:StartLogging()
-            end
-        elseif (difficultyID == 23) then -- Mythic
-            if (self.db.profile.party.mythic) then
-                self:StartLogging()
-            end
-        elseif (difficultyID == 24) then -- Timewalking
-            if (self.db.profile.party.timewalking) then
-                self:StartLogging()
+        else
+            if (difficultyID == 1) then -- Normal
+                if (self.db.profile.party.normal) then
+                    self:StartLogging()
+                end
+            elseif (difficultyID == 2) then -- Heroic
+                if (self.db.profile.party.heroic) then
+                    self:StartLogging()
+                end
+            elseif (difficultyID == 8) then -- Mythic Plus
+                if (self.db.profile.party.mythicplus) then
+                    self:StartLogging()
+                end
+            elseif (difficultyID == 23) then -- Mythic
+                if (self.db.profile.party.mythic) then
+                    self:StartLogging()
+                end
+            elseif (difficultyID == 24) then -- Timewalking
+                if (self.db.profile.party.timewalking) then
+                    self:StartLogging()
+                end
             end
         end
     elseif (instanceType == "raid") then
@@ -504,7 +521,7 @@ function SimpleCombatLogger:CheckDisableLogging(event)
         self:Print("Event: " .. tostring(event))
         self:Print("Instance Info: " .. tostring(GetInstanceInfo()))
     end
-    local _, instanceType, difficultyID = GetInstanceInfo();
+    local _, instanceType, difficultyID, _, maxPlayers = GetInstanceInfo();
     if (instanceType == nil or instanceType == "none") then
         self:StopLogging()
         return
@@ -517,28 +534,35 @@ function SimpleCombatLogger:CheckDisableLogging(event)
             self:StopLogging()
         end
     elseif (instanceType == "party") then
-        if (difficultyID == 1) then -- Normal
-            if (not self.db.profile.party.normal) then
-                self:StopLogging()
+        if (maxPlayers > 5) then
+            if (self.db.profile.enabledebug) then
+                self:Print("maxPlayers greater than 5 in party instance, assuming to be non-dungeon")
             end
-        elseif (difficultyID == 2) then -- Heroic
-            if (not self.db.profile.party.heroic) then
-                self:StopLogging()
-            end
-        elseif (difficultyID == 8) then -- Mythic Plus
-            if (not self.db.profile.party.mythicplus) then
-                self:StopLogging()
-            end
-        elseif (difficultyID == 23) then -- Mythic
-            if (not self.db.profile.party.mythic) then
-                self:StopLogging()
-            end
-        elseif (difficultyID == 24) then -- Timewalking
-            if (not self.db.profile.party.timewalking) then
-                self:StopLogging()
-            end
-        else
             self:StopLogging()
+        else
+            if (difficultyID == 1) then -- Normal
+                if (not self.db.profile.party.normal) then
+                    self:StopLogging()
+                end
+            elseif (difficultyID == 2) then -- Heroic
+                if (not self.db.profile.party.heroic) then
+                    self:StopLogging()
+                end
+            elseif (difficultyID == 8) then -- Mythic Plus
+                if (not self.db.profile.party.mythicplus) then
+                    self:StopLogging()
+                end
+            elseif (difficultyID == 23) then -- Mythic
+                if (not self.db.profile.party.mythic) then
+                    self:StopLogging()
+                end
+            elseif (difficultyID == 24) then -- Timewalking
+                if (not self.db.profile.party.timewalking) then
+                    self:StopLogging()
+                end
+            else
+                self:StopLogging()
+            end
         end
     elseif (instanceType == "raid") then
         if (difficultyID == 7 or difficultyID == 17) then -- LFR
