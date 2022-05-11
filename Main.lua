@@ -181,6 +181,16 @@ local options = {
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.arenaskirmish end
                 },
+                soloshuffle = {
+                    name = "Solo Shuffle",
+                    desc = "Enables / Disables solo shuffle logging",
+                    type = "toggle",
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.pvp.soloshuffle = value
+                        SimpleCombatLogger:CheckArenaLogging(nil)
+                    end,
+                    get = function(info) return SimpleCombatLogger.db.profile.pvp.soloshuffle end
+                },
                 ratedarena = {
                     name = "Rated Arena",
                     desc = "Enables / Disables rated arena logging",
@@ -248,7 +258,7 @@ function SimpleCombatLogger:OnInitialize()
         whileDead = true,
         hideOnEscape = true,
         preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
-      }
+    }
 
     -- Initialisation
     self.db = LibStub("AceDB-3.0"):New("SimpleCombatLoggerDB", defaults, true)
@@ -314,6 +324,7 @@ function SimpleCombatLogger:ChatCommand(input)
         self:Print("Instance Info: " .. tostring(GetInstanceInfo()))
         self:Print("Rated Arena: " .. tostring(C_PvP.IsRatedArena()))
         self:Print("Arena Skirmish: " .. tostring(IsArenaSkirmish()))
+        self:Print("Solo Shuffle: " .. tostring(IsSoloShuffle()))
         self:Print("Rated BG: " .. tostring(C_PvP.IsRatedBattleground()))
     else
         LibStub("AceConfigCmd-3.0").HandleCommand(SimpleCombatLogger, "SimpleCombatLogger", "SimpleCombatLogger", input)
@@ -500,14 +511,17 @@ function SimpleCombatLogger:CheckArenaLogging()
         self:Print("Currently Logging: " .. tostring(IsLoggingCombat))
         self:Print("Rated Arena: " .. tostring(C_PvP.IsRatedArena()))
         self:Print("Arena Skirmish: " .. tostring(IsArenaSkirmish()))
+        self:Print("Solo Shuffle: " .. tostring(IsSoloShuffle()))
     end
-    if (C_PvP.IsRatedArena() and not IsArenaSkirmish()) then
+    if (C_PvP.IsRatedArena() and not IsArenaSkirmish() and not IsSoloShuffle()) then
         if (self.db.profile.pvp.ratedarena) then
             self:StartLogging()
         else
             self:StopLogging()
         end
     elseif (IsArenaSkirmish() and self.db.profile.pvp.arenaskirmish) then
+        self:StartLogging()
+    elseif (IsSoloShuffle() and self.db.profile.pvp.soloshuffle) then
         self:StartLogging()
     else
         self:StopLogging()
