@@ -324,7 +324,7 @@ function SimpleCombatLogger:ChatCommand(input)
         self:Print("Instance Info: " .. tostring(GetInstanceInfo()))
         self:Print("Rated Arena: " .. tostring(C_PvP.IsRatedArena()))
         self:Print("Arena Skirmish: " .. tostring(IsArenaSkirmish()))
-        self:Print("Solo Shuffle: " .. tostring(IsSoloShuffle()))
+        self:Print("Solo Shuffle: " .. tostring(C_PvP.IsSoloShuffle()))
         self:Print("Rated BG: " .. tostring(C_PvP.IsRatedBattleground()))
     else
         LibStub("AceConfigCmd-3.0").HandleCommand(SimpleCombatLogger, "SimpleCombatLogger", "SimpleCombatLogger", input)
@@ -511,9 +511,9 @@ function SimpleCombatLogger:CheckArenaLogging()
         self:Print("Currently Logging: " .. tostring(IsLoggingCombat))
         self:Print("Rated Arena: " .. tostring(C_PvP.IsRatedArena()))
         self:Print("Arena Skirmish: " .. tostring(IsArenaSkirmish()))
-        self:Print("Solo Shuffle: " .. tostring(IsSoloShuffle()))
+        self:Print("Solo Shuffle: " .. tostring(C_PvP.IsSoloShuffle()))
     end
-    if (C_PvP.IsRatedArena() and not IsArenaSkirmish() and not IsSoloShuffle()) then
+    if (C_PvP.IsRatedArena() and not IsArenaSkirmish() and not C_PvP.IsSoloShuffle()) then
         if (self.db.profile.pvp.ratedarena) then
             self:StartLogging()
         else
@@ -521,7 +521,7 @@ function SimpleCombatLogger:CheckArenaLogging()
         end
     elseif (IsArenaSkirmish() and self.db.profile.pvp.arenaskirmish) then
         self:StartLogging()
-    elseif (IsSoloShuffle() and self.db.profile.pvp.soloshuffle) then
+    elseif (C_PvP.IsSoloShuffle() and self.db.profile.pvp.soloshuffle) then
         self:StartLogging()
     else
         self:StopLogging()
