@@ -305,7 +305,7 @@ function SimpleCombatLogger:OnEnable()
 
     self:Print("Enabled")
     if (not self.db.profile.disableaclprompt and GetCVar("advancedCombatLogging") == "0") then
-        StaticPopup_Show ("SCL_ENABLE_ACL")
+        StaticPopup_Show("SCL_ENABLE_ACL")
     end
     self:RegisterEvent("UPDATE_INSTANCE_INFO", "CheckEnableLogging")
     self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", "CheckEnableLogging")
