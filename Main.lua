@@ -191,6 +191,16 @@ local options = {
                     end,
                     get = function(info) return SimpleCombatLogger.db.profile.pvp.soloshuffle end
                 },
+                wargame = {
+                    name = "War Game",
+                    desc = "Enables / Disables war game logging",
+                    type = "toggle",
+                    set = function(info, value)
+                        SimpleCombatLogger.db.profile.pvp.wargame = value
+                        SimpleCombatLogger:CheckArenaLogging(nil)
+                    end,
+                    get = function(info) return SimpleCombatLogger.db.profile.pvp.wargame end
+                },
                 ratedarena = {
                     name = "Rated Arena",
                     desc = "Enables / Disables rated arena logging",
@@ -325,6 +335,7 @@ function SimpleCombatLogger:ChatCommand(input)
         self:Print("Rated Arena: " .. tostring(C_PvP.IsRatedArena()))
         self:Print("Arena Skirmish: " .. tostring(IsArenaSkirmish()))
         self:Print("Solo Shuffle: " .. tostring(C_PvP.IsSoloShuffle()))
+        self:Print("War Game: " .. tostring(IsWargame()))
         self:Print("Rated BG: " .. tostring(C_PvP.IsRatedBattleground()))
     else
         LibStub("AceConfigCmd-3.0").HandleCommand(SimpleCombatLogger, "SimpleCombatLogger", "SimpleCombatLogger", input)
@@ -512,8 +523,9 @@ function SimpleCombatLogger:CheckArenaLogging()
         self:Print("Rated Arena: " .. tostring(C_PvP.IsRatedArena()))
         self:Print("Arena Skirmish: " .. tostring(IsArenaSkirmish()))
         self:Print("Solo Shuffle: " .. tostring(C_PvP.IsSoloShuffle()))
+        self:Print("War Game: " .. tostring(IsWargame()))
     end
-    if (C_PvP.IsRatedArena() and not IsArenaSkirmish() and not C_PvP.IsSoloShuffle()) then
+    if (C_PvP.IsRatedArena() and not IsArenaSkirmish() and not C_PvP.IsSoloShuffle() and not IsWargame()) then
         if (self.db.profile.pvp.ratedarena) then
             self:StartLogging()
         else
@@ -522,6 +534,8 @@ function SimpleCombatLogger:CheckArenaLogging()
     elseif (IsArenaSkirmish() and self.db.profile.pvp.arenaskirmish) then
         self:StartLogging()
     elseif (C_PvP.IsSoloShuffle() and self.db.profile.pvp.soloshuffle) then
+        self:StartLogging()
+    elseif (IsWargame() and self.db.profile.pvp.wargame) then
         self:StartLogging()
     else
         self:StopLogging()
