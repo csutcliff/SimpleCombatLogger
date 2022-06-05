@@ -525,12 +525,10 @@ function SimpleCombatLogger:CheckArenaLogging()
         self:Print("Solo Shuffle: " .. tostring(C_PvP.IsSoloShuffle()))
         self:Print("War Game: " .. tostring(IsWargame()))
     end
-    if (C_PvP.IsRatedArena() and not IsArenaSkirmish() and not C_PvP.IsSoloShuffle() and not IsWargame()) then
-        if (self.db.profile.pvp.ratedarena) then
-            self:StartLogging()
-        else
-            self:StopLogging()
-        end
+    -- if (C_PvP.IsRatedArena() and not IsArenaSkirmish() and not C_PvP.IsSoloShuffle() and not IsWargame()) then
+    -- I don't think the extra commented checks above are necessary but haven't been able to confirm
+    if (C_PvP.IsRatedArena()  and self.db.profile.pvp.ratedarena and not IsArenaSkirmish()) then
+        self:StartLogging()
     elseif (IsArenaSkirmish() and self.db.profile.pvp.arenaskirmish) then
         self:StartLogging()
     elseif (C_PvP.IsSoloShuffle() and self.db.profile.pvp.soloshuffle) then
