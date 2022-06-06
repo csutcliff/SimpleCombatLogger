@@ -2,7 +2,7 @@
 ## Title: SimpleCombatLogger
 ## Notes: Automatically combat log for certain instance types and difficulties
 ## Author: Chris Sutcliff
-## Version: 1.6.0
+## Version: 1.6.1
 ## SavedVariables: SimpleCombatLoggerDB
 
 embeds.xml
