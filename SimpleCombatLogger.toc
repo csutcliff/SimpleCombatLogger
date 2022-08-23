@@ -1,8 +1,8 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: SimpleCombatLogger
 ## Notes: Automatically combat log for certain instance types and difficulties
 ## Author: Chris Sutcliff
-## Version: 1.6.1
+## Version: 1.6.2
 ## SavedVariables: SimpleCombatLoggerDB
 
 embeds.xml
