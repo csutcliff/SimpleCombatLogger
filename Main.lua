@@ -30,7 +30,7 @@ local options = {
         },
         delaystop = {
             name = "Delayed Log Stop",
-            desc = "Delay the stopping of combat logging by 30 seconds, this can help compatibility with some external programs such as SquadOV",
+            desc = "Delay the stopping of combat logging by 30 seconds, this can help compatibility with some external programs such as Warcraft Recorder",
             type = "toggle",
             set = function(info, value) SimpleCombatLogger.db.profile.delaystop = value end,
             get = function(info) return SimpleCombatLogger.db.profile.delaystop end
