@@ -1,4 +1,4 @@
-## Interface: 100007
+## Interface: 100200
 ## Title: SimpleCombatLogger
 ## Notes: Automatically combat log for certain instance types and difficulties
 ## Author: Chris Sutcliff
