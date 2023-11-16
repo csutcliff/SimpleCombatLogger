@@ -358,6 +358,7 @@ function SimpleCombatLogger:StartLogging()
     if (DelayStopTimer ~= nil) then
         if (self.db.profile.enabledebug) then
             self:Print("Cancelling Delayed Stop")
+        end
         self:CancelTimer(DelayStopTimer)
         DelayStopTimer = nil
     end
