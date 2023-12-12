@@ -355,13 +355,27 @@ function SimpleCombatLogger:SetEnable(value)
 end
 
 function SimpleCombatLogger:StartLogging()
-    if (DelayStopTimer ~= nil) then
-        if (self.db.profile.enabledebug) then
-            self:Print("Cancelling Delayed Stop")
-        end
-        self:CancelTimer(DelayStopTimer)
-        DelayStopTimer = nil
+    if (self.db.profile.enabledebug) then
+        self:Print("Start called")
     end
+
+    if (IsLoggingCombat) then
+        if (self.db.profile.enabledebug) then
+            self:Print("Combat Logging is already enabled")
+        end
+        if (DelayStopTimer ~= nil) then
+            if (self.db.profile.enabledebug) then
+                self:Print("Cancelling Delayed Stop")
+            end
+            self:CancelTimer(DelayStopTimer)
+            DelayStopTimer = nil
+        else
+            if (self.db.profile.enabledebug) then
+                self:Print("No active delayed stop")
+            end
+        end
+    end
+
     if (not IsLoggingCombat) then
         self:Print("Starting Combat Logging")
         if (LoggingCombat(true)) then
@@ -375,6 +389,10 @@ function SimpleCombatLogger:StartLogging()
 end
 
 function SimpleCombatLogger:StopLogging()
+    if (self.db.profile.enabledebug) then
+        self:Print("Stop called")
+    end
+
     if (IsLoggingCombat) then
         if (self.db.profile.delaystop) then
             if (self.db.profile.enabledebug) then
@@ -412,11 +430,22 @@ function SimpleCombatLogger:StopLoggingNow()
 end
 
 function SimpleCombatLogger:ArenaEventTimer(event)
+    local name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
     if (self.db.profile.enabledebug) then
+        self:Print("Arena Event Timer")
+        self:Print("Currently Logging: " .. tostring(IsLoggingCombat))
         self:Print("Event: " .. tostring(event))
-        self:Print("Instance Info: " .. tostring(GetInstanceInfo()))
+        self:Print("    name: " .. tostring(name))
+        self:Print("    instanceType: " .. tostring(instanceType))
+        self:Print("    difficultyID: " .. tostring(difficultyID))
+        self:Print("    difficultyName: " .. tostring(difficultyName))
+        self:Print("    maxPlayers: " .. tostring(maxPlayers))
+        self:Print("    dynamicDifficulty: " .. tostring(dynamicDifficulty))
+        self:Print("    isDynamic: " .. tostring(isDynamic))
+        self:Print("    instanceID: " .. tostring(instanceID))
+        self:Print("    instanceGroupSize: " .. tostring(instanceGroupSize))
+        self:Print("    LfgDungeonID: " .. tostring(LfgDungeonID))
     end
-    local _, instanceType = GetInstanceInfo();
     if (instanceType == "arena") then
         if (self.db.profile.enabledebug) then
             self:Print("Scheduling arena check for 5 seconds")
@@ -434,12 +463,11 @@ function SimpleCombatLogger:CheckToggleLogging(event)
 end
 
 function SimpleCombatLogger:CheckEnableLogging(event)
+    local name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
     if (self.db.profile.enabledebug) then
         self:Print("Check Enable")
         self:Print("Currently Logging: " .. tostring(IsLoggingCombat))
         self:Print("Event: " .. tostring(event))
-        -- self:Print("Instance Info:" .. tostring(GetInstanceInfo()))
-        local name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
         self:Print("    name: " .. tostring(name))
         self:Print("    instanceType: " .. tostring(instanceType))
         self:Print("    difficultyID: " .. tostring(difficultyID))
@@ -451,7 +479,6 @@ function SimpleCombatLogger:CheckEnableLogging(event)
         self:Print("    instanceGroupSize: " .. tostring(instanceGroupSize))
         self:Print("    LfgDungeonID: " .. tostring(LfgDungeonID))
     end
-    local _, instanceType, difficultyID, _, maxPlayers = GetInstanceInfo();
     if (instanceType == "pvp") then
         if (C_PvP.IsRatedBattleground()) then -- Returns false in regular BG, need to test in rated
             if (self.db.profile.pvp.ratedbg) then
@@ -546,22 +573,40 @@ function SimpleCombatLogger:CheckArenaLogging()
 end
 
 function SimpleCombatLogger:CheckDisableLogging(event)
+    local name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
     if (self.db.profile.enabledebug) then
         self:Print("Check Disable")
         self:Print("Currently Logging: " .. tostring(IsLoggingCombat))
         self:Print("Event: " .. tostring(event))
-        self:Print("Instance Info: " .. tostring(GetInstanceInfo()))
+        self:Print("    name: " .. tostring(name))
+        self:Print("    instanceType: " .. tostring(instanceType))
+        self:Print("    difficultyID: " .. tostring(difficultyID))
+        self:Print("    difficultyName: " .. tostring(difficultyName))
+        self:Print("    maxPlayers: " .. tostring(maxPlayers))
+        self:Print("    dynamicDifficulty: " .. tostring(dynamicDifficulty))
+        self:Print("    isDynamic: " .. tostring(isDynamic))
+        self:Print("    instanceID: " .. tostring(instanceID))
+        self:Print("    instanceGroupSize: " .. tostring(instanceGroupSize))
+        self:Print("    LfgDungeonID: " .. tostring(LfgDungeonID))
     end
-    local _, instanceType, difficultyID, _, maxPlayers = GetInstanceInfo();
     if (instanceType == nil or instanceType == "none") then
+        if (self.db.profile.enabledebug) then
+            self:Print("Not in instance, stopping logging")
+        end
         self:StopLogging()
         return
     elseif (instanceType == "pvp") then
         if (C_PvP.IsRatedBattleground()) then -- Returns false in regular BG, need to test in rated
             if (not self.db.profile.pvp.ratedbg) then
+                if (self.db.profile.enabledebug) then
+                    self:Print("Rated BG disabled, stopping logging")
+                end
                 self:StopLogging()
             end
         elseif (not self.db.profile.pvp.regularbg) then
+            if (self.db.profile.enabledebug) then
+                self:Print("Regular BG disabled, stopping logging")
+            end
             self:StopLogging()
         end
     elseif (instanceType == "party") then
@@ -573,57 +618,101 @@ function SimpleCombatLogger:CheckDisableLogging(event)
         else
             if (difficultyID == 1) then -- Normal
                 if (not self.db.profile.party.normal) then
+                    if (self.db.profile.enabledebug) then
+                        self:Print("Normal dungeons disabled, stopping logging")
+                    end
                     self:StopLogging()
                 end
             elseif (difficultyID == 2) then -- Heroic
                 if (not self.db.profile.party.heroic) then
+                    if (self.db.profile.enabledebug) then
+                        self:Print("Heroic dungeons disabled, stopping logging")
+                    end
                     self:StopLogging()
                 end
             elseif (difficultyID == 8) then -- Mythic Plus
                 if (not self.db.profile.party.mythicplus) then
+                    if (self.db.profile.enabledebug) then
+                        self:Print("M+ disabled, stopping logging")
+                    end
                     self:StopLogging()
                 end
             elseif (difficultyID == 23) then -- Mythic
                 if (not self.db.profile.party.mythic) then
+                    if (self.db.profile.enabledebug) then
+                        self:Print("Mythic dungeons disabled, stopping logging")
+                    end
                     self:StopLogging()
                 end
             elseif (difficultyID == 24) then -- Timewalking
                 if (not self.db.profile.party.timewalking) then
+                    if (self.db.profile.enabledebug) then
+                        self:Print("Timewalking dungeons disabled, stopping logging")
+                    end
                     self:StopLogging()
                 end
             else
+                if (self.db.profile.enabledebug) then
+                    self:Print("Unknown party instance type, stopping logging")
+                end
                 self:StopLogging()
             end
         end
     elseif (instanceType == "raid") then
         if (difficultyID == 7 or difficultyID == 17) then -- LFR
             if (not self.db.profile.raid.lfr) then
+                if (self.db.profile.enabledebug) then
+                    self:Print("LFR disabled, stopping logging")
+                end
                 self:StopLogging()
             end
         elseif (difficultyID == 3 or difficultyID == 4 or difficultyID == 9 or difficultyID == 14) then -- Normal
             if (not self.db.profile.raid.normal) then
+                if (self.db.profile.enabledebug) then
+                    self:Print("Normal raid disabled, stopping logging")
+                end
                 self:StopLogging()
             end
         elseif (difficultyID == 5 or difficultyID == 6 or difficultyID == 15) then -- Heroic
             if (not self.db.profile.raid.heroic) then
+                if (self.db.profile.enabledebug) then
+                    self:Print("Heroic raid disabled, stopping logging")
+                end
                 self:StopLogging()
             end
         elseif (difficultyID == 16) then -- Mythic
             if (not self.db.profile.raid.mythic) then
+                if (self.db.profile.enabledebug) then
+                    self:Print("Mythic raid disabled, stopping logging")
+                end
                 self:StopLogging()
             end
         elseif (difficultyID == 33 or difficultyID == 151) then -- Timewalking
             if (not self.db.profile.raid.timewalking) then
+                if (self.db.profile.enabledebug) then
+                    self:Print("Timewalking raid disabled, stopping logging")
+                end
                 self:StopLogging()
             end
         else
+            if (self.db.profile.enabledebug) then
+                self:Print("Unknown raid instance type, stopping logging")
+            end
             self:StopLogging()
         end
     elseif (instanceType == "scenario") then
         if (difficultyID == 167) then -- Torghast
             if (not self.db.profile.scenario.torghast) then
+                if (self.db.profile.enabledebug) then
+                    self:Print("Torghast disabled, stopping logging")
+                end
                 self:StopLogging()
             end
+        else
+            if (self.db.profile.enabledebug) then
+                self:Print("Unknown scenario instance type, stopping logging")
+            end
+            self:StopLogging()
         end
     end
 end
