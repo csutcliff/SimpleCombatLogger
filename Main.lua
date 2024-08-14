@@ -276,7 +276,8 @@ function SimpleCombatLogger:OnInitialize()
     self.db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
     self.db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
     LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("SimpleCombatLogger", options)
-    self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("SimpleCombatLogger", "SimpleCombatLogger")
+    --Only the category ID is required, discard first parameter
+    _, self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("SimpleCombatLogger", "SimpleCombatLogger")
     LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("SCL/Profiles", LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db))
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions("SCL/Profiles", "Profiles", "SimpleCombatLogger")
     self:RegisterChatCommand("scl", "ChatCommand");
@@ -324,7 +325,7 @@ end
 
 function SimpleCombatLogger:ChatCommand(input)
     if (not input or input:trim() == "") then
-        InterfaceOptionsFrame_OpenToCategory(self.optionsFrame)
+        Settings.OpenToCategory(self.optionsFrame)
     elseif (input:trim() == "enable") then
         self:SetEnable(true)
     elseif (input:trim() == "disable") then
