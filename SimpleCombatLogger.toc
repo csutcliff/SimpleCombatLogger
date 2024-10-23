@@ -1,8 +1,8 @@
-## Interface: 110002
+## Interface: 110005
 ## Title: SimpleCombatLogger
 ## Notes: Automatically combat log for certain instance types and difficulties
 ## Author: Chris Sutcliff
-## Version: 1.6.10
+## Version: 1.6.11
 ## SavedVariables: SimpleCombatLoggerDB
 ## OptionalDeps: Ace3
 ## X-Curse-Project-ID: 457620
