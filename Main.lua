@@ -304,7 +304,10 @@ function SimpleCombatLogger:OnEnable()
         return
     end
 
-    self:Print("Enabled")
+    if (self.db.profile.enabledebug) then
+        self:Print("Enabled")
+    end
+
     if (not self.db.profile.disableaclprompt and GetCVar("advancedCombatLogging") == "0") then
         StaticPopup_Show("SCL_ENABLE_ACL")
     end
@@ -316,7 +319,9 @@ function SimpleCombatLogger:OnEnable()
 end
 
 function SimpleCombatLogger:OnDisable()
-    self:Print("Disabled")
+    if (self.db.profile.enabledebug) then
+        self:Print("Disabled")
+    end
     self:UnregisterEvent("UPDATE_INSTANCE_INFO")
     self:UnregisterEvent("PLAYER_DIFFICULTY_CHANGED")
     self:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
