@@ -1,4 +1,4 @@
-## Interface: 110207, 120000, 120001
+## Interface: 110207, 120000, 120001, 120007
 ## Title: SimpleCombatLogger
 ## Notes: Automatically combat log for certain instance types and difficulties
 ## Author: Chris Sutcliff
