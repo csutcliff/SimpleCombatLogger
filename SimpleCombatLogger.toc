@@ -6,6 +6,7 @@
 ## SavedVariables: SimpleCombatLoggerDB
 ## OptionalDeps: Ace3
 ## X-Curse-Project-ID: 457620
+## Category: Combat
 
 embeds.xml
 Main.lua
