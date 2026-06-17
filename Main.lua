@@ -529,7 +529,7 @@ function SimpleCombatLogger:CheckEnableLogging(event)
             if (self.db.profile.raid.heroic) then
                 self:StartLogging()
             end
-        elseif (difficultyID == 16) then -- Mythic
+        elseif (difficultyID == 16 or difficultyID == 233) then -- Mythic
             if (self.db.profile.raid.mythic) then
                 self:StartLogging()
             end
@@ -681,7 +681,7 @@ function SimpleCombatLogger:CheckDisableLogging(event)
                 end
                 self:StopLogging()
             end
-        elseif (difficultyID == 16) then -- Mythic
+        elseif (difficultyID == 16 or difficultyID == 233) then -- Mythic
             if (not self.db.profile.raid.mythic) then
                 if (self.db.profile.enabledebug) then
                     self:Print("Mythic raid disabled, stopping logging")
